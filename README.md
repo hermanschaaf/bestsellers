@@ -1,8 +1,8 @@
 New York Times Best Seller List Go API Client
 =============================================
 
-[Go Client Docs](http://godoc.org/github.com/hermanschaaf/bestsellers)
-[API Docs](http://developer.nytimes.com/docs/best_sellers_api)
+ - [Go Client Docs](http://godoc.org/github.com/hermanschaaf/bestsellers)
+ - [API Docs](http://developer.nytimes.com/docs/best_sellers_api)
 
 ### Example usage
 

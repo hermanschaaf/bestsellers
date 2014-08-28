@@ -1,5 +1,8 @@
 New York Times Best Seller List Go API Client
-=============================================
+---------------------------------------------
+
+[![Build Status](https://travis-ci.org/hermanschaaf/bestsellers.svg?branch=master)](https://travis-ci.org/hermanschaaf/bestsellers)
+
 
  - [Go Client Docs](http://godoc.org/github.com/hermanschaaf/bestsellers)
  - [API Docs](http://developer.nytimes.com/docs/best_sellers_api)

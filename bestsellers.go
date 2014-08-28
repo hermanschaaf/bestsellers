@@ -112,6 +112,9 @@ func (j *Time) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+// UpdateType corresponds to the possible values for frequency of updates
+// to the lists. The possibilities are Daily, Weekly, Monthly or Yearly,
+// as mapped by the constants in this package.
 type UpdateType uint8
 
 func (u *UpdateType) UnmarshalJSON(b []byte) error {

@@ -100,21 +100,21 @@ type ListNamesResponse struct {
 	Results []ListNamesResult `json:"results"`
 }
 
-// jsonTime allows us to parse dates from the JSON response
-type jsonTime time.Time
+// Time allows us to parse dates from the JSON response
+type Time time.Time
 
-func (j *jsonTime) UnmarshalJSON(b []byte) error {
+func (j *Time) UnmarshalJSON(b []byte) error {
 	d, err := time.Parse(dateFmt, strings.Trim(string(b), `"`))
 	if err != nil {
 		return err
 	}
-	*j = jsonTime(d)
+	*j = Time(d)
 	return nil
 }
 
-type updateType uint8
+type UpdateType uint8
 
-func (u *updateType) UnmarshalJSON(b []byte) error {
+func (u *UpdateType) UnmarshalJSON(b []byte) error {
 	s := strings.Trim(string(b), `"`)
 	switch s {
 	case "DAILY":
@@ -139,9 +139,9 @@ type ListNamesResult struct {
 	ListName            string     `json:"list_name"`
 	DisplayName         string     `json:"display_name"`
 	ListNameEncoded     string     `json:"list_name_encoded"`
-	OldestPublishedDate jsonTime   `json:"oldest_published_date"`
-	NewestPublishedDate jsonTime   `json:"newest_published_date"`
-	Updated             updateType `json:"updated"`
+	OldestPublishedDate Time       `json:"oldest_published_date"`
+	NewestPublishedDate Time       `json:"newest_published_date"`
+	Updated             UpdateType `json:"updated"`
 }
 
 // ListNames returns the response for /svc/books/v2/lists/names

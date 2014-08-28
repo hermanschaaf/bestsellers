@@ -54,9 +54,9 @@ func TestListNames(t *testing.T) {
 				ListName:            "Combined Print and E-Book Fiction",
 				DisplayName:         "Combined Print & E-Book Fiction",
 				ListNameEncoded:     "combined-print-and-e-book-fiction",
-				OldestPublishedDate: jsonTime(oldestDate),
-				NewestPublishedDate: jsonTime(newestDate),
-				Updated:             updateType(Weekly),
+				OldestPublishedDate: Time(oldestDate),
+				NewestPublishedDate: Time(newestDate),
+				Updated:             UpdateType(Weekly),
 			},
 		},
 	}

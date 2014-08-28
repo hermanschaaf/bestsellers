@@ -9,11 +9,19 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 )
 
 // dateFmt describes the date format as specified by the API (YYYY-MM-DD)
 const dateFmt = "2006-01-02"
+const (
+	Daily = iota
+	Weekly
+	Monthly
+	Yearly
+	Never
+)
 
 // BaseResponse is the basic response returned by all endpoints in the API.
 // It includes the status of the request, a copyright notice and the number
@@ -92,17 +100,48 @@ type ListNamesResponse struct {
 	Results []listNamesResult `json:"results"`
 }
 
+// jsonTime allows us to parse dates from the JSON response
+type jsonTime time.Time
+
+func (j *jsonTime) UnmarshalJSON(b []byte) error {
+	d, err := time.Parse(dateFmt, strings.Trim(string(b), `"`))
+	if err != nil {
+		return err
+	}
+	*j = jsonTime(d)
+	return nil
+}
+
+type updateType uint8
+
+func (u *updateType) UnmarshalJSON(b []byte) error {
+	s := strings.Trim(string(b), `"`)
+	switch s {
+	case "DAILY":
+		*u = Daily
+	case "WEEKLY":
+		*u = Weekly
+	case "MONTHLY":
+		*u = Monthly
+	case "YEARLY":
+		*u = Yearly
+	default:
+		*u = Never
+	}
+	return nil
+}
+
 // listNamesResult describes the form of a single ListName result returned
 // by ListNames. DisplayName contains a human-formatted description of the list name,
 // and ListNameEncoded is the API-friendly name that should be used when calling
 // other API methods, such as Lists and ListsByDate.
 type listNamesResult struct {
-	ListName            string `json:"list_name"`
-	DisplayName         string `json:"display_name"`
-	ListNameEncoded     string `json:"list_name_encoded"`
-	OldestPublishedDate string `json:"oldest_published_date"`
-	NewestPublishedDate string `json:"newest_published_date"`
-	Updated             string `json:"updated"`
+	ListName            string     `json:"list_name"`
+	DisplayName         string     `json:"display_name"`
+	ListNameEncoded     string     `json:"list_name_encoded"`
+	OldestPublishedDate jsonTime   `json:"oldest_published_date"`
+	NewestPublishedDate jsonTime   `json:"newest_published_date"`
+	Updated             updateType `json:"updated"`
 }
 
 // ListNames returns the response for /svc/books/v2/lists/names

@@ -3,6 +3,13 @@ New York Times Best Seller List Go API Client
 
 [![Build Status](https://travis-ci.org/hermanschaaf/bestsellers.svg?branch=master)](https://travis-ci.org/hermanschaaf/bestsellers)
 
+A simple Go API Client for the New York Times Best Seller List. This is still under development, so use at your own discretion. If you would like to contribute to this library, you are very welcome. When doing so, please adhere to these guidelines:
+
+ - Run `goimports` on files before making a PR ([goimports](https://godoc.org/code.google.com/p/go.tools/cmd/goimports))
+ - All new code must be accompanied by a test
+ - If it's a very significant departure from what is already here, first open a Github issue for discussion and to get a go-ahead
+
+For more information, read the docs below:
 
  - [Go Client Docs](http://godoc.org/github.com/hermanschaaf/bestsellers)
  - [API Docs](http://developer.nytimes.com/docs/best_sellers_api)

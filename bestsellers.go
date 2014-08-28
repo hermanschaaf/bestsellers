@@ -97,7 +97,7 @@ func (c *Client) get(path string, offset int) ([]byte, error) {
 // and copyright information, as well as the number of results returned.
 type ListNamesResponse struct {
 	BaseResponse
-	Results []listNamesResult `json:"results"`
+	Results []ListNamesResult `json:"results"`
 }
 
 // jsonTime allows us to parse dates from the JSON response
@@ -135,7 +135,7 @@ func (u *updateType) UnmarshalJSON(b []byte) error {
 // by ListNames. DisplayName contains a human-formatted description of the list name,
 // and ListNameEncoded is the API-friendly name that should be used when calling
 // other API methods, such as Lists and ListsByDate.
-type listNamesResult struct {
+type ListNamesResult struct {
 	ListName            string     `json:"list_name"`
 	DisplayName         string     `json:"display_name"`
 	ListNameEncoded     string     `json:"list_name_encoded"`

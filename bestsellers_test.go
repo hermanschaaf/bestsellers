@@ -49,8 +49,8 @@ func TestListNames(t *testing.T) {
 			Copyright:  "copyright",
 			NumResults: 30,
 		},
-		Results: []listNamesResult{
-			listNamesResult{
+		Results: []ListNamesResult{
+			ListNamesResult{
 				ListName:            "Combined Print and E-Book Fiction",
 				DisplayName:         "Combined Print & E-Book Fiction",
 				ListNameEncoded:     "combined-print-and-e-book-fiction",

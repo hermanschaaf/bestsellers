@@ -10,17 +10,6 @@ import (
 	"time"
 )
 
-func setupTestServer(t *testing.T, wantURL string, dummyResponse []byte) *httptest.Server {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write(dummyResponse)
-
-		if r.URL.String() != wantURL {
-			t.Errorf("Request URL = %q, want %q", r.URL, wantURL)
-		}
-	}))
-	return ts
-}
-
 // ExampleListNames instantiates a new Client and calls the ListNames method
 // to return the names of the various New York Times Best Seller lists. It then
 // iterates through the results, and prints the encoded list name for each
@@ -38,6 +27,17 @@ func ExampleListNames() {
 	for _, r := range lists.Results {
 		fmt.Println(r.ListNameEncoded)
 	}
+}
+
+func setupTestServer(t *testing.T, wantURL string, dummyResponse []byte) *httptest.Server {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write(dummyResponse)
+
+		if r.URL.String() != wantURL {
+			t.Errorf("Request URL = %q, want %q", r.URL, wantURL)
+		}
+	}))
+	return ts
 }
 
 func TestListNames(t *testing.T) {

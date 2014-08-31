@@ -1,0 +1,100 @@
+{
+  "status": "OK",
+  "copyright": "Copyright (c) 2014 The New York Times Company.  All Rights Reserved.",
+  "num_results": 25,
+  "last_modified": "2014-08-30T06:32:15-04:00",
+  "results": [
+    {
+      "list_name": "Hardcover Nonfiction",
+      "display_name": "Hardcover Nonfiction",
+      "updated": "WEEKLY",
+      "bestsellers_date": "2014-08-23",
+      "published_date": "2014-09-07",
+      "list_image": "9781595231123.jpg",
+      "normal_list_ends_at": 15,
+      "rank": 1,
+      "rank_last_week": 2,
+      "weeks_on_list": 14,
+      "asterisk": 0,
+      "dagger": 0,
+      "isbns": [
+        {
+          "isbn10": "1595231129",
+          "isbn13": "9781595231123"
+        },
+        {
+          "isbn10": "1611763398",
+          "isbn13": "9781611763393"
+        }
+      ],
+      "book_details": [
+        {
+          "title": "ONE NATION",
+          "description": "Carson, a retired pediatric neurosurgeon, now a Fox News contributor, offers solutions to problems.",
+          "contributor": "by Ben Carson with Candy Carson",
+          "author": "Ben Carson with Candy Carson",
+          "contributor_note": "",
+          "price": 0,
+          "age_group": "",
+          "publisher": "Sentinel",
+          "primary_isbn13": "9781595231123",
+          "primary_isbn10": "1595231129",
+          "book_image": "http://du.ec2.nytimes.com.s3.amazonaws.com/prd/books/9781595231123.jpg",
+          "amazon_product_url": "http://www.amazon.com/One-Nation-What-Americas-Future/dp/1595231129?tag=thenewyorktim-20"
+        }
+      ],
+      "reviews": [
+        {
+          "book_review_link": "",
+          "first_chapter_link": "",
+          "sunday_review_link": "",
+          "article_chapter_link": ""
+        }
+      ]
+    },
+    {
+      "list_name": "Hardcover Nonfiction",
+      "display_name": "Hardcover Nonfiction",
+      "updated": "WEEKLY",
+      "bestsellers_date": "2014-08-23",
+      "published_date": "2014-09-07",
+      "list_image": "9781595231123.jpg",
+      "normal_list_ends_at": 15,
+      "rank": 2,
+      "rank_last_week": 0,
+      "weeks_on_list": 1,
+      "asterisk": 0,
+      "dagger": 0,
+      "isbns": [
+        {
+          "isbn10": "052595418X",
+          "isbn13": "9780525954187"
+        }
+      ],
+      "book_details": [
+        {
+          "title": "THE ORGANIZED MIND",
+          "description": "A professor draws on research in neuroscience to explain how organization can help us manage the overwhelming flood of information in our lives.",
+          "contributor": "by Daniel J. Levitin",
+          "author": "Daniel J Levitin",
+          "contributor_note": "",
+          "price": 0,
+          "age_group": "",
+          "publisher": "Dutton",
+          "primary_isbn13": "9780525954187",
+          "primary_isbn10": "052595418X",
+          "book_image": "http://du.ec2.nytimes.com.s3.amazonaws.com/prd/books/9780698157224.jpeg",
+          "amazon_product_url": null
+        }
+      ],
+      "reviews": [
+        {
+          "book_review_link": "",
+          "first_chapter_link": "",
+          "sunday_review_link": "",
+          "article_chapter_link": ""
+        }
+      ]
+    }
+  ]
+}

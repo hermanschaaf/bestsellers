@@ -1,0 +1,13 @@
+{
+	"status":"OK",
+	"copyright":"copyright",
+	"num_results":30,
+	"results": [{
+		"list_name":"Combined Print and E-Book Fiction",
+		"display_name":"Combined Print & E-Book Fiction",
+		"list_name_encoded":"combined-print-and-e-book-fiction",
+		"oldest_published_date":"2011-02-13",
+		"newest_published_date":"2014-08-31",
+		"updated":"WEEKLY"
+	}
+]}

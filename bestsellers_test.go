@@ -1,6 +1,7 @@
 package bestsellers
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -18,6 +19,25 @@ func setupTestServer(t *testing.T, wantURL string, dummyResponse []byte) *httpte
 		}
 	}))
 	return ts
+}
+
+// ExampleListNames instantiates a new Client and calls the ListNames method
+// to return the names of the various New York Times Best Seller lists. It then
+// iterates through the results, and prints the encoded list name for each
+// list. These encoded names could be used in further API calls to other functions.
+func ExampleListNames() {
+	c := NewClient("your-api-key")
+
+	// get the best seller lists
+	lists, err := c.ListNames()
+	if err != nil {
+		panic(err)
+	}
+
+	// print the encoded list names
+	for _, r := range lists.Results {
+		fmt.Println(r.ListNameEncoded)
+	}
 }
 
 func TestListNames(t *testing.T) {

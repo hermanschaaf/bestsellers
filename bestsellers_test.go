@@ -91,6 +91,7 @@ func TestLists(t *testing.T) {
 		t.Fatalf("Error: %v", err)
 	}
 
+	// verify that the response was correct and the JSON correctly marshaled
 	wantBaseResponse := BaseResponse{
 		Status:     "OK",
 		Copyright:  "Copyright (c) 2014 The New York Times Company.  All Rights Reserved.",
@@ -149,5 +150,46 @@ func TestLists(t *testing.T) {
 
 	if got.Results[0].Dagger != Bool(false) {
 		t.Errorf("got Results[0].Dagger = %v, want %v", got.Results[0].Dagger, Bool(false))
+	}
+}
+
+func TestListsOffset(t *testing.T) {
+	dummyListResponse, err := ioutil.ReadFile("testdata/lists.json")
+	if err != nil {
+		t.Fatal("Error reading json testdata:", err)
+	}
+
+	ts := setupTestServer(t, "/svc/books/v2/lists/ebook-fiction?api-key=test-api-key&offset=10", dummyListResponse)
+	defer ts.Close()
+
+	// create a new API client
+	c := NewClient("test-api-key")
+	c.rootURL = ts.URL
+
+	// get the ebook-fiction list, with 10 offset
+	_, err = c.Lists("ebook-fiction", 10)
+	if err != nil {
+		t.Fatalf("Error: %v", err)
+	}
+}
+
+func TestListsByDate(t *testing.T) {
+	dummyListResponse, err := ioutil.ReadFile("testdata/lists.json")
+	if err != nil {
+		t.Fatal("Error reading json testdata:", err)
+	}
+
+	ts := setupTestServer(t, "/svc/books/v2/lists/2011-02-13/ebook-fiction?api-key=test-api-key&offset=10", dummyListResponse)
+	defer ts.Close()
+
+	// create a new API client
+	c := NewClient("test-api-key")
+	c.rootURL = ts.URL
+
+	// get the ebook-fiction list, with 10 offset
+	date, _ := time.Parse(dateFmt, "2011-02-13")
+	_, err = c.ListsByDate("ebook-fiction", date, 10)
+	if err != nil {
+		t.Fatalf("Error: %v", err)
 	}
 }

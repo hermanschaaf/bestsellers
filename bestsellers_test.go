@@ -1,6 +1,7 @@
 package bestsellers
 
 import (
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -8,34 +9,31 @@ import (
 	"time"
 )
 
-func TestListNames(t *testing.T) {
-	var dummyListNamesResponse = `{
-		"status":"OK",
-		"copyright":"copyright",
-		"num_results":30,
-		"results": [{
-			"list_name":"Combined Print and E-Book Fiction",
-			"display_name":"Combined Print & E-Book Fiction",
-			"list_name_encoded":"combined-print-and-e-book-fiction",
-			"oldest_published_date":"2011-02-13",
-			"newest_published_date":"2014-08-31",
-			"updated":"WEEKLY"
-		}
-	]}`
-
+func setupTestServer(t *testing.T, wantURL string, dummyResponse []byte) *httptest.Server {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(dummyListNamesResponse))
+		w.Write(dummyResponse)
 
-		wantURL := "/svc/books/v2/lists/names?api-key=test-api-key"
 		if r.URL.String() != wantURL {
 			t.Errorf("Request URL = %q, want %q", r.URL, wantURL)
 		}
 	}))
+	return ts
+}
+
+func TestListNames(t *testing.T) {
+	dummyListNamesResponse, err := ioutil.ReadFile("testdata/listnames.json")
+	if err != nil {
+		t.Fatal("Error reading json testdata:", err)
+	}
+
+	ts := setupTestServer(t, "/svc/books/v2/lists/names?api-key=test-api-key", dummyListNamesResponse)
 	defer ts.Close()
 
+	// create a new API client
 	c := NewClient("test-api-key")
 	c.rootURL = ts.URL
 
+	// get the available list names
 	got, err := c.ListNames()
 	if err != nil {
 		t.Fatalf("Error: %v", err)
@@ -74,22 +72,82 @@ func TestListNames(t *testing.T) {
 	}
 }
 
-// func TestLists(t *testing.T) {
-// 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-// 		w.Write([]byte(dummyListNamesResponse))
+func TestLists(t *testing.T) {
+	dummyListResponse, err := ioutil.ReadFile("testdata/lists.json")
+	if err != nil {
+		t.Fatal("Error reading json testdata:", err)
+	}
 
-// 		wantURL := "/svc/books/v2/lists/names?api-key=test-api-key"
-// 		if r.URL.String() != wantURL {
-// 			t.Errorf("Request URL = %q, want %q", r.URL, wantURL)
-// 		}
-// 	}))
-// 	defer ts.Close()
+	ts := setupTestServer(t, "/svc/books/v2/lists/hardcover-nonfiction?api-key=test-api-key", dummyListResponse)
+	defer ts.Close()
 
-// 	c := NewClient("test-api-key")
-// 	c.rootURL = ts.URL
+	// create a new API client
+	c := NewClient("test-api-key")
+	c.rootURL = ts.URL
 
-// 	_, err := c.ListNames()
-// 	if err != nil {
-// 		t.Fatalf("Error: %v", err)
-// 	}
-// }
+	// get the hardcover-fiction list, with 0 offset
+	got, err := c.Lists("hardcover-nonfiction", 0)
+	if err != nil {
+		t.Fatalf("Error: %v", err)
+	}
+
+	wantBaseResponse := BaseResponse{
+		Status:     "OK",
+		Copyright:  "Copyright (c) 2014 The New York Times Company.  All Rights Reserved.",
+		NumResults: 25,
+	}
+
+	if got.BaseResponse != wantBaseResponse {
+		t.Errorf("Got BaseResponse = %v, want %v", got.BaseResponse, wantBaseResponse)
+	}
+
+	if len(got.Results) != 2 {
+		t.Fatalf("Got len(Results) = %d, want %d", len(got.Results), 2)
+	}
+
+	wantISBNs := []ISBN{
+		ISBN{ISBN10: "1595231129", ISBN13: "9781595231123"},
+		ISBN{ISBN10: "1611763398", ISBN13: "9781611763393"},
+	}
+
+	if !reflect.DeepEqual(got.Results[0].ISBNs, wantISBNs) {
+		t.Error("got ISBNS = %v, want %v", got.Results[0].ISBNs, wantISBNs)
+	}
+
+	wantDetails := []BookDetails{
+		BookDetails{
+			Title:            "ONE NATION",
+			Description:      "Carson, a retired pediatric neurosurgeon, now a Fox News contributor, offers solutions to problems.",
+			Contributor:      "by Ben Carson with Candy Carson",
+			Author:           "Ben Carson with Candy Carson",
+			ContributorNote:  "",
+			Price:            0,
+			AgeGroup:         "",
+			Publisher:        "Sentinel",
+			PrimaryISBN13:    "9781595231123",
+			PrimaryISBN10:    "1595231129",
+			BookImage:        "http://du.ec2.nytimes.com.s3.amazonaws.com/prd/books/9781595231123.jpg",
+			AmazonProductURL: "http://www.amazon.com/One-Nation-What-Americas-Future/dp/1595231129?tag=thenewyorktim-20",
+		},
+	}
+
+	if !reflect.DeepEqual(got.Results[0].BookDetails, wantDetails) {
+		t.Errorf("got BookDetails = %v, want %v", got.Results[0].BookDetails, wantDetails)
+	}
+
+	if got.Results[0].DisplayName != "Hardcover Nonfiction" {
+		t.Errorf("got Results[0].DisplayName = %q, want %q", got.Results[0].DisplayName, "Hardcover Nonfiction")
+	}
+
+	if got.Results[0].Updated != Weekly {
+		t.Errorf("got Results[0].Updated = %v, want %v", got.Results[0].Updated, "<weekly>")
+	}
+
+	if got.Results[0].Asterisk != Bool(false) {
+		t.Errorf("got Results[0].Asterisk = %v, want %v", got.Results[0].Asterisk, Bool(false))
+	}
+
+	if got.Results[0].Dagger != Bool(false) {
+		t.Errorf("got Results[0].Dagger = %v, want %v", got.Results[0].Dagger, Bool(false))
+	}
+}

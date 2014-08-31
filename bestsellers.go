@@ -134,6 +134,13 @@ func (u *UpdateType) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+type Bool bool
+
+func (bo *Bool) UnmarshalJSON(b []byte) error {
+	*bo = Bool(len(b) == 1 && b[0] == '1')
+	return nil
+}
+
 // listNamesResult describes the form of a single ListName result returned
 // by ListNames. DisplayName contains a human-formatted description of the list name,
 // and ListNameEncoded is the API-friendly name that should be used when calling
@@ -159,7 +166,65 @@ func (c *Client) ListNames() (*ListNamesResponse, error) {
 	return &listNames, err
 }
 
+// ListsResponse describes the response given by the Lists endpoint.
 type ListsResponse struct {
+	BaseResponse
+	LastModified string
+	Results      []ListsResult
+}
+
+// ListResult is a single result as returend by the Lists endpoint. It
+// contains information about the book, as well as inner structs for
+// ISBN numbers, book details and reviews.
+type ListsResult struct {
+	ListName         string        `json:"list_name"`
+	DisplayName      string        `json:"display_name"`
+	Updated          UpdateType    `json:"updated"`
+	BestsellersDate  Time          `json:"bestsellers_date"`
+	PublishedDate    Time          `json:"published_date"`
+	ListImage        string        `json:"list_image"`
+	NormalListEndsAt int           `json:"normal_list_ends_at"`
+	Rank             int           `json:"rank"`
+	RankLastWeek     int           `json:"rank_last_week"`
+	WeeksOnList      int           `json:"weeks_on_list"`
+	Asterisk         Bool          `json:"asterisk"`
+	Dagger           Bool          `json:"dagger"`
+	ISBNs            []ISBN        `json:"isbns"`
+	BookDetails      []BookDetails `json:"book_details"`
+	Reviews          []Review      `json:"reviews"`
+}
+
+// ISBN describes the form of the ISBN numbers that describe a book.
+// There are two fields, ISBN10 for the 10-digit ISBN number, and ISBN13
+// for the 13-digit ISBN number.
+type ISBN struct {
+	ISBN10 string `json:"isbn10"`
+	ISBN13 string `json:"isbn13"`
+}
+
+// BookDetails describes the details of a book, as returned by the API.
+type BookDetails struct {
+	Title            string  `json:"title"`
+	Description      string  `json:"description"`
+	Contributor      string  `json:"contributor"`
+	Author           string  `json:"author"`
+	ContributorNote  string  `json:"contributor_note"`
+	Price            float64 `json:"price"`
+	AgeGroup         string  `json:"age_group"`
+	Publisher        string  `json:"publisher"`
+	PrimaryISBN13    string  `json:"primary_isbn13"`
+	PrimaryISBN10    string  `json:"primary_isbn10"`
+	BookImage        string  `json:"book_image"`
+	AmazonProductURL string  `json:"amazon_product_url"`
+}
+
+// Review contains the links to various review-related information regarding
+// a specific book, such as the book review link, a link to the first chapter, etc.
+type Review struct {
+	BookReviewLink     string `json:"book_review_link"`
+	FirstChapterLink   string `json:"first_chapter_link"`
+	SundayReviewLink   string `json:"sunday_review_link"`
+	ArticleChapterLink string `json:"article_chapter_link`
 }
 
 func (c *Client) lists(path string, offset int) (*ListsResponse, error) {
@@ -175,7 +240,7 @@ func (c *Client) lists(path string, offset int) (*ListsResponse, error) {
 
 // Lists returns the reponse for /svc/books/v2/lists/{list-name}.
 func (c *Client) Lists(listName string, offset int) (*ListsResponse, error) {
-	p := fmt.Sprintf("/svc/books/v2/lists/%s")
+	p := fmt.Sprintf("/svc/books/v2/lists/%s", listName)
 	return c.lists(p, offset)
 }
 

@@ -101,14 +101,16 @@ type ListNamesResponse struct {
 }
 
 // Time allows us to parse dates from the JSON response
-type Time time.Time
+type Time struct {
+	time.Time
+}
 
 func (j *Time) UnmarshalJSON(b []byte) error {
 	d, err := time.Parse(dateFmt, strings.Trim(string(b), `"`))
 	if err != nil {
 		return err
 	}
-	*j = Time(d)
+	*j = Time{d}
 	return nil
 }
 
@@ -202,7 +204,7 @@ type ISBN struct {
 	ISBN13 string `json:"isbn13"`
 }
 
-// BookDetails describes the details of a book, as returned by the API.
+// BookDetails describes the details of a book in the list, as returned by the API.
 type BookDetails struct {
 	Title            string  `json:"title"`
 	Description      string  `json:"description"`
@@ -227,7 +229,7 @@ type Review struct {
 	ArticleChapterLink string `json:"article_chapter_link`
 }
 
-func (c *Client) lists(path string, offset int) (*ListsResponse, error) {
+func (c *Client) list(path string, offset int) (*ListsResponse, error) {
 	content, err := c.get(path, offset)
 	if err != nil {
 		return nil, err
@@ -238,14 +240,14 @@ func (c *Client) lists(path string, offset int) (*ListsResponse, error) {
 	return &lists, err
 }
 
-// Lists returns the reponse for /svc/books/v2/lists/{list-name}.
-func (c *Client) Lists(listName string, offset int) (*ListsResponse, error) {
+// List returns the reponse for /svc/books/v2/lists/{list-name}.
+func (c *Client) List(listName string, offset int) (*ListsResponse, error) {
 	p := fmt.Sprintf("/svc/books/v2/lists/%s", listName)
-	return c.lists(p, offset)
+	return c.list(p, offset)
 }
 
-// ListsByDate returns the reponse for /svc/books/v2/lists/{date}/{list-name}.
-func (c *Client) ListsByDate(listName string, date time.Time, offset int) (*ListsResponse, error) {
+// ListByDate returns the reponse for /svc/books/v2/lists/{date}/{list-name}.
+func (c *Client) ListByDate(listName string, date time.Time, offset int) (*ListsResponse, error) {
 	p := fmt.Sprintf("/svc/books/v2/lists/%s/%s", date.Format(dateFmt), listName)
-	return c.lists(p, offset)
+	return c.list(p, offset)
 }

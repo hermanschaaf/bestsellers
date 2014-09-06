@@ -72,8 +72,8 @@ func TestListNames(t *testing.T) {
 				ListName:            "Combined Print and E-Book Fiction",
 				DisplayName:         "Combined Print & E-Book Fiction",
 				ListNameEncoded:     "combined-print-and-e-book-fiction",
-				OldestPublishedDate: Time(oldestDate),
-				NewestPublishedDate: Time(newestDate),
+				OldestPublishedDate: Time{oldestDate},
+				NewestPublishedDate: Time{newestDate},
 				Updated:             UpdateType(Weekly),
 			},
 		},
@@ -92,7 +92,7 @@ func TestListNames(t *testing.T) {
 	}
 }
 
-func TestLists(t *testing.T) {
+func TestList(t *testing.T) {
 	dummyListResponse, err := ioutil.ReadFile("testdata/lists.json")
 	if err != nil {
 		t.Fatal("Error reading json testdata:", err)
@@ -106,7 +106,7 @@ func TestLists(t *testing.T) {
 	c.rootURL = ts.URL
 
 	// get the hardcover-fiction list, with 0 offset
-	got, err := c.Lists("hardcover-nonfiction", 0)
+	got, err := c.List("hardcover-nonfiction", 0)
 	if err != nil {
 		t.Fatalf("Error: %v", err)
 	}
@@ -187,13 +187,13 @@ func TestListsOffset(t *testing.T) {
 	c.rootURL = ts.URL
 
 	// get the ebook-fiction list, with 10 offset
-	_, err = c.Lists("ebook-fiction", 10)
+	_, err = c.List("ebook-fiction", 10)
 	if err != nil {
 		t.Fatalf("Error: %v", err)
 	}
 }
 
-func TestListsByDate(t *testing.T) {
+func TestListByDate(t *testing.T) {
 	dummyListResponse, err := ioutil.ReadFile("testdata/lists.json")
 	if err != nil {
 		t.Fatal("Error reading json testdata:", err)
@@ -208,7 +208,7 @@ func TestListsByDate(t *testing.T) {
 
 	// get the ebook-fiction list, with 10 offset
 	date, _ := time.Parse(dateFmt, "2011-02-13")
-	_, err = c.ListsByDate("ebook-fiction", date, 10)
+	_, err = c.ListByDate("ebook-fiction", date, 10)
 	if err != nil {
 		t.Fatalf("Error: %v", err)
 	}
